@@ -6,7 +6,13 @@
     <script src="snake.js"></script>
 </head>
 <body>
-    <button onclick="draw(50)">生成页面</button>
+    <div>
+        <button onclick="draw(50)">生成页面</button>
+        <button onclick="directionChange(1)">上</button>
+        <button onclick="directionChange(3)">下</button>
+        <button onclick="directionChange(2)">左</button>
+        <button onclick="directionChange(0)">右</button>
+    </div>
     <table id = "table" style="width: 500px;height: 500px"></table>
 
 </body>

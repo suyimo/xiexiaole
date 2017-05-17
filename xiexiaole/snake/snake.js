@@ -75,10 +75,14 @@ function move (direction) {
     snake.unshift(newHead)
 //    console.log(newHead,snake)
     updateMap(newHead,null)
+    eat(newHead)
 }
 
-function eat () {
-
+function eat (point) {
+    
+    if (p) {
+        snake.unshift(p)
+    }
     createFood()
 }
 
@@ -100,6 +104,7 @@ function updateMap (red,black) {
         th.style.backgroundColor = '#999'
     }
 
+    //一开始的思路,比较耗费资源,还麻烦
 //    var table = document.getElementById ('table')
 ////    console.log(';;;;;;')
 //    var rows = table.childNodes;
@@ -125,7 +130,7 @@ function arrContainPoint (arr,point) {
     console.log(point)
     for (var p in arr) {
         if (pointEqual(p,point)) {
-            return true
+            return p
         }
     }
     return false

@@ -4,8 +4,6 @@
 
 var direction = 3
 var snake = []
-var redPoints = []
-var blackPoint = []
 var foods = []
 var recyclePoints = []
 function draw (n) {
@@ -17,7 +15,7 @@ function draw (n) {
             var th = document.createElement ('th')
             th.setAttribute('row',i)
             th.setAttribute('col',j)
-            th.setAttribute('id',10*i+j)
+            th.setAttribute('id',100*i+j)
             th.style.backgroundColor = '#999'
             tr.appendChild(th)
         }
@@ -34,8 +32,15 @@ function draw (n) {
 
     }
 
+    //初始化食物
+    for (var i = 0;i<4;i++) {
+        createFood()
+    }
+
+
+
     //启动定时
-    window.setInterval("move(direction)",1000)
+    window.setInterval("move(direction)",600)
 }
 
 function directionChange (newdirection) {
@@ -43,6 +48,11 @@ function directionChange (newdirection) {
         direction = newdirection
     }
 
+}
+
+
+function xxl (x,y,z) {
+    return x + y + z
 }
 
 /*
@@ -56,6 +66,16 @@ function move (direction) {
     recyclePoints.unshift(snake.pop())
     updateMap(null,recyclePoints[0])
     var head = snake[0]
+    var newHead = nextHead(head)
+
+    snake.unshift(newHead)
+//    console.log(newHead,snake)
+    updateMap(newHead,null)
+    eat()
+}
+
+function nextHead (head) {
+
     var newHead = recyclePoint()
 
     if (direction === 3) {
@@ -71,35 +91,57 @@ function move (direction) {
         newHead['x'] = head['x']
         newHead['y'] = head['y'] - 1
     }
-
-    snake.unshift(newHead)
-//    console.log(newHead,snake)
-    updateMap(newHead,null)
-    eat(newHead)
+    return newHead
 }
 
-function eat (point) {
-    
-    if (p) {
-        snake.unshift(p)
+function eat () {
+    var nextPoint = nextHead(snake[0])
+    var food = arrContainPoint(foods,nextPoint)
+    if (food) {
+        foods.splice(foods.indexOf(food))
+        snake.unshift(food)
+        updateMap(nextPoint,null)
+        createFood()
     }
-    createFood()
+    recyclePoints.push(nextPoint)
+
 }
 
 function createFood () {
+    var p = recyclePoint()
+    function foodpPoint (point) {
+        point['x']=randomCoordinate(50)
+        point['y']=randomCoordinate(50)
+        console.log(point)
+        if (arrContainPoint(foods,point)) {
+            return foodpPoint(point)
+        } else  {
+            if (arrContainPoint(snake,point)){
+                return foodpPoint(point)
+            } else  {
+                return point;
+            }
+        }
+    }
+
+    p = foodpPoint(p)
+    updateMap(p,null)
+    foods.push(p)
 
 }
+
+
 
 function updateMap (red,black) {
 
     if (red) {
-        var redPointTag = String(red['x']*10 + red['y'])
+        var redPointTag = String(red['x']*100 + red['y'])
         var th = document.getElementById (redPointTag)
         th.style.backgroundColor = '#f00'
     }
 
     if (black) {
-        var blackPointTag = String(black['x']*10 + black['y'])
+        var blackPointTag = String(black['x']*100 + black['y'])
         var th = document.getElementById (blackPointTag)
         th.style.backgroundColor = '#999'
     }
@@ -127,12 +169,13 @@ function updateMap (red,black) {
 }
 
 function arrContainPoint (arr,point) {
-    console.log(point)
-    for (var p in arr) {
+    for (var i = 0;i<arr.length;i++) {
+        var p = arr[i]
         if (pointEqual(p,point)) {
             return p
         }
     }
+
     return false
 }
 
@@ -145,9 +188,15 @@ function recyclePoint () {
 }
 
 function pointEqual (point1,point2) {
+
     if (point1['x'] === point2['x'] && point1['y'] === point2['y']) {
         return true
     } else {
         return false
     }
 }
+
+function  randomCoordinate(n) {
+   return parseInt(Math.random()*n)
+}
+
